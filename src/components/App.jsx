@@ -4,57 +4,79 @@ import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import { Container } from './App.styled';
-import NewsApiService from '../services/NewsApiService';
+import * as ImageService from '../services/image-api';
 
 class App extends Component {
   state = {
     query: '',
-    pictures: null,
+    page: 1,
+    pictures: [],
     isLoading: false,
     error: false,
+    totalPictures: 0,
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const prevSearchTerm = prevState.query;
-    const nextSearchTerm = this.state.query;
-    if (prevSearchTerm !== nextSearchTerm) {
-      this.setState({ status: 'isLoading' });
-      const newsApiService = new NewsApiService();
-      newsApiService
-        .fetchImage(nextSearchTerm)
-        .then(data => {
-          if (data.hits.length === 0) {
-            return alert(
-              `There is no pictures correspond to ${nextSearchTerm}`
-            );
+  async componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+
+    if (prevState.query !== query || prevState.page !== page) {
+      try {
+        this.setState({ isLoading: 'true', error: '' });
+        const data = await ImageService.fetchImage(query, page);
+
+        const pictures = data.hits.map(
+          ({ id, webformatURL, tags, largeImageURL }) => {
+            return {
+              id,
+              webformatURL,
+              tags,
+              largeImageURL,
+            };
           }
-          this.setState({ pictures: data.hits, status: 'sucsess' });
-        })
-        .catch(error => this.setState({ error, status: 'error' }));
+        );
+
+        this.setState(prevState => {
+          return {
+            pictures: [...prevState.pictures, ...pictures],
+            totalPictures: data.totalHits,
+          };
+        });
+      } catch (error) {
+        this.setState({ error: 'Something went wrong' });
+      } finally {
+        this.setState({ isLoading: 'false' });
+      }
     }
   }
 
   formSubmitHandler = searchForm => {
-    this.setState({ query: searchForm });
+    this.setState({
+      query: searchForm,
+      pictures: [],
+      page: 1,
+      totalPictures: 0,
+    });
+  };
+
+  incrementPage = () => {
+    this.setState(prevState => {
+      return { page: prevState.page + 1 };
+    });
   };
 
   render() {
-    const { error, pictures, query, status } = this.state;
-    if (status === 'isLoading') {
-      return <div>Loading...</div>;
-    }
+    const { pictures, error, totalPictures, isLoading } = this.state;
 
-    if (status === 'error') {
-      return <h1>{error.message}</h1>;
-    }
+    const showButton = pictures.length !== totalPictures && isLoading;
 
     return (
       <>
         {/* <ToastContainer /> */}
         <Container>
           <Searchbar onSubmit={this.formSubmitHandler} />
-          {pictures && <ImageGallery data={pictures} text={query} />}
-          {pictures && <Button />}
+          {pictures.length > 0 && <ImageGallery data={pictures} />}
+          {error && <p>{error}</p>}
+          {showButton && <Button onClick={this.incrementPage} />}
         </Container>
       </>
     );

@@ -15,19 +15,20 @@ class Searchbar extends Component {
   };
 
   hendleSerchFormChange = e => {
-    this.setState({ searchForm: e.currentTarget.value.toLowerCase() });
+    this.setState({ searchForm: e.currentTarget.value.toLowerCase().trim() });
   };
 
   hendleSubmit = e => {
+    const { searchForm } = this.state;
     e.preventDefault();
 
-    if (this.state.searchForm.trim() === '') {
+    if (searchForm.trim() === '') {
       // toast('Please enter, what exactly you want to find?');
 
       alert('Please enter, what exactly you want to find?');
       return;
     }
-    this.props.onSubmit(this.state.searchForm);
+    this.props.onSubmit(searchForm);
     this.setState({ searchForm: '' });
   };
 

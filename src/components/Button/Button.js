@@ -1,4 +1,8 @@
 import { LoadMoreBnt } from './Button.styled';
-export default function Button() {
-  return <LoadMoreBnt type="button">Load More</LoadMoreBnt>;
+export default function Button({ onClick }) {
+  return (
+    <LoadMoreBnt type="button" onClick={onClick}>
+      Load More
+    </LoadMoreBnt>
+  );
 }
