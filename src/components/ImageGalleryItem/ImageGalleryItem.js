@@ -1,10 +1,10 @@
 import { GalleryItem, GalleryItemImage } from './ImageGalleryItem.styled';
 import PropTypes from 'prop-types';
 
-export default function ImageGalleryItem({ url, alt }) {
+export default function ImageGalleryItem({ url, alt, onClick }) {
   return (
     <GalleryItem>
-      <GalleryItemImage src={url} alt={alt} />
+      <GalleryItemImage src={url} alt={alt} onClick={onClick} />
     </GalleryItem>
   );
 }

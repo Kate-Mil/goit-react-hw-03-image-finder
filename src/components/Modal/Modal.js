@@ -1,13 +1,29 @@
 import { Component } from 'react';
+import { createPortal } from 'react-dom';
+import { Overlay, ModalContent } from './Modal.styled';
+
+const modalRoot = document.querySelector('#modal-root');
 
 class Modal extends Component {
   render() {
-    return (
-      <div class="overlay">
-        <div class="modal">
-          <img src="" alt="" />
-        </div>
-      </div>
+    const { data, selectedPictureId } = this.props;
+    const selectedPicture = data.find(
+      picture => picture.id === selectedPictureId
+    );
+
+    if (!selectedPicture) {
+      return;
+    } // Ранняя проверка, если выбранная картинка не найдена
+
+    const { largeImageURL, tags } = selectedPicture;
+
+    return createPortal(
+      <Overlay>
+        <ModalContent>
+          <img src={largeImageURL} alt={tags} />
+        </ModalContent>
+      </Overlay>,
+      modalRoot
     );
   }
 }

@@ -5,6 +5,7 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import { Container } from './App.styled';
 import * as ImageService from '../services/image-api';
+import Modal from './Modal/Modal';
 
 class App extends Component {
   state = {
@@ -14,6 +15,8 @@ class App extends Component {
     isLoading: false,
     error: false,
     totalPictures: 0,
+    showModal: false,
+    selectedPictureId: null,
   };
 
   async componentDidUpdate(_, prevState) {
@@ -64,8 +67,22 @@ class App extends Component {
     });
   };
 
+  toggleModal = pictureId => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+      selectedPictureId: pictureId,
+    }));
+  };
+
   render() {
-    const { pictures, error, totalPictures, isLoading } = this.state;
+    const {
+      pictures,
+      error,
+      totalPictures,
+      isLoading,
+      showModal,
+      selectedPictureId,
+    } = this.state;
 
     const showButton = pictures.length !== totalPictures && isLoading;
 
@@ -74,9 +91,14 @@ class App extends Component {
         {/* <ToastContainer /> */}
         <Container>
           <Searchbar onSubmit={this.formSubmitHandler} />
-          {pictures.length > 0 && <ImageGallery data={pictures} />}
+          {pictures.length > 0 && (
+            <ImageGallery data={pictures} onClick={this.toggleModal} />
+          )}
           {error && <p>{error}</p>}
           {showButton && <Button onClick={this.incrementPage} />}
+          {showModal && (
+            <Modal data={pictures} selectedPictureId={selectedPictureId} />
+          )}
         </Container>
       </>
     );
