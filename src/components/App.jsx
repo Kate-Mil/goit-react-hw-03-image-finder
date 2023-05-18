@@ -24,7 +24,7 @@ class App extends Component {
 
     if (prevState.query !== query || prevState.page !== page) {
       try {
-        this.setState({ isLoading: 'true', error: '' });
+        this.setState({ isLoading: true, error: '' });
         const data = await ImageService.fetchImage(query, page);
 
         const pictures = data.hits.map(
@@ -47,7 +47,7 @@ class App extends Component {
       } catch (error) {
         this.setState({ error: 'Something went wrong' });
       } finally {
-        this.setState({ isLoading: 'false' });
+        this.setState({ isLoading: false });
       }
     }
   }
@@ -84,7 +84,7 @@ class App extends Component {
       selectedPictureId,
     } = this.state;
 
-    const showButton = pictures.length !== totalPictures && isLoading;
+    const showButton = pictures.length !== totalPictures && !isLoading;
 
     return (
       <>
