@@ -5,6 +5,26 @@ import { Overlay, ModalContent } from './Modal.styled';
 const modalRoot = document.querySelector('#modal-root');
 
 class Modal extends Component {
+  componentDidMount() {
+    window.addEventListener('keydown', this.hendleKeyDown);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keydown', this.hendleKeyDown);
+  }
+
+  hendleKeyDown = e => {
+    if (e.code === 'Escape') {
+      this.props.onClick();
+    }
+  };
+
+  hendleOverlayClick = e => {
+    if (e.currentTarget === e.target) {
+      this.props.onClick();
+    }
+  };
+
   render() {
     const { data, selectedPictureId } = this.props;
     const selectedPicture = data.find(
@@ -18,7 +38,7 @@ class Modal extends Component {
     const { largeImageURL, tags } = selectedPicture;
 
     return createPortal(
-      <Overlay>
+      <Overlay onClick={this.hendleOverlayClick}>
         <ModalContent>
           <img src={largeImageURL} alt={tags} />
         </ModalContent>

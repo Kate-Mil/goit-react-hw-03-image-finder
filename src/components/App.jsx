@@ -97,7 +97,11 @@ class App extends Component {
           {error && <p>{error}</p>}
           {showButton && <Button onClick={this.incrementPage} />}
           {showModal && (
-            <Modal data={pictures} selectedPictureId={selectedPictureId} />
+            <Modal
+              data={pictures}
+              selectedPictureId={selectedPictureId}
+              onClick={this.toggleModal}
+            />
           )}
         </Container>
       </>
