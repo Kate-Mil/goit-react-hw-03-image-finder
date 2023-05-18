@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { toast } from 'react-toastify';
 import {
   SearchBar,
   SearchForm,
@@ -23,8 +22,6 @@ class Searchbar extends Component {
     e.preventDefault();
 
     if (searchForm.trim() === '') {
-      // toast('Please enter, what exactly you want to find?');
-
       alert('Please enter, what exactly you want to find?');
       return;
     }

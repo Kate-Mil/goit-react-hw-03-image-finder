@@ -1,8 +1,8 @@
 import { Component } from 'react';
-// import { ToastContainer } from 'react-toastify';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
+import Loader from './Loader/Loader';
 import { Container } from './App.styled';
 import * as ImageService from '../services/image-api';
 import Modal from './Modal/Modal';
@@ -88,13 +88,13 @@ class App extends Component {
 
     return (
       <>
-        {/* <ToastContainer /> */}
         <Container>
           <Searchbar onSubmit={this.formSubmitHandler} />
           {pictures.length > 0 && (
             <ImageGallery data={pictures} onClick={this.toggleModal} />
           )}
           {error && <p>{error}</p>}
+          {isLoading && <Loader />}
           {showButton && <Button onClick={this.incrementPage} />}
           {showModal && (
             <Modal
